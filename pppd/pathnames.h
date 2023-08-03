@@ -37,10 +37,14 @@
  * sysconfdir is ${prefix}/etc. Setting prefix to /usr, you'll have to override
  * sysconfdir with /etc to avoid installing config files into /usr/etc.
  *
- * In addition, there are three explicit variables that has overrides via configure:
- * - PPPD_RUNTIME_DIR, set by --with-runtime-dir=<dir>
- * - PPPD_LOGFILE_DIR, set by --with-logfile-dir=<dir>
- * - PPPD_PLUGIN_DIR, set by --with-plugin-dir=<dir>
+ * In addition, there are explicit variables that have overrides via configure:
+ * - SYSCONFDIR, set by --sysconfdir=<dir> or its platform default
+ * - LOCALSATEDIR, set by --localstatedir=<dir> or its platform default
+ * - PPPD_RUNTIME_DIR, set by --with-runtime-dir=<dir> or undef
+ * - PPPD_LOCK_DIR, set by --with-lock-dir=<dir> or undef
+ * - PPPD_LOGFILE_DIR, set by --with-logfile-dir=<dir> or undef
+ * If pppd is built with plugins, additionally:
+ * - PPPD_PLUGIN_DIR, set by --with-plugin-dir=<dir> or its platform default
  */
 #ifndef PPP_PATHNAMES_H
 #define PPP_PATHNAMES_H
@@ -59,22 +63,39 @@
 
 /*
  * PPPD_RUNTIME_DIR is set by passing --with-runtime-dir=<path> via configure
- *    the default value set by configure when option is absent is ${localstatedir}/run/pppd
  */
 #ifdef PPPD_RUNTIME_DIR
 #define PPP_PATH_VARRUN         PPPD_RUNTIME_DIR
 #else
-#define PPP_PATH_VARRUN         _PATH_VARRUN
+#define PPP_PATH_VARRUN         _PATH_VARRUN "/pppd"
+#endif
+
+/*
+ * PPPD_LOCK_DIR is set by passing --with-lock-dir=<path> via configure
+ */
+#ifdef PPPD_LOCK_DIR
+#define PPP_PATH_LOCKDIR         PPPD_LOCK_DIR
+#else
+#ifdef __linux__
+#define PPP_PATH_LOCKDIR        LOCALSTATEDIR "/lock"
+#else
+#ifdef SVR4
+#define PPP_PATH_LOCKDIR        LOCALSTATEDIR "/spool/locks"
+#else
+#define PPP_PATH_LOCKDIR        LOCALSTATEDIR "/spool/lock"
+#endif
+#endif
+
+
 #endif
 
 /*
  * PPPD_LOGFILE_DIR is set by passing --with-logfile-dir=<path> via configure
- *    the default value set by configure when option is absent is ${localstatedir}/log/ppp
  */
 #ifdef PPPD_LOGFILE_DIR
 #define PPP_PATH_VARLOG         PPPD_LOGFILE_DIR
 #else
-#define PPP_PATH_VARLOG         _PATH_VARRUN "/log/ppp"
+#define PPP_PATH_VARLOG         LOCALSTATEDIR "log/ppp"
 #endif
 
 /*
@@ -118,16 +139,5 @@
 #endif
 
 #define PPP_PATH_PPPDB          PPP_PATH_VARRUN  "/pppd2.tdb"
-
-#ifdef __linux__
-#define PPP_PATH_LOCKDIR        PPP_PATH_VARRUN  "/lock"
-#else
-#ifdef SVR4
-#define PPP_PATH_LOCKDIR        LOCALSTATEDIR "/spool/locks"
-#else
-#define PPP_PATH_LOCKDIR        LOCALSTATEDIR "/spool/lock"
-#endif
-#endif
-
 
 #endif /* PPP_PATHNAMES_H */

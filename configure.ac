@@ -209,18 +209,24 @@ AC_SUBST(PPPD_PLUGIN_DIR, "$PPPD_PLUGIN_DIR", [The pppd plugin directory])
 AC_ARG_WITH([runtime-dir],
 	AS_HELP_STRING([--with-runtime-dir=DIR],[Specify the runtime directory for pppd]))
 AS_IF([test -n "$with_runtime_dir"],
-	[PPPD_RUNTIME_DIR="$with_runtime_dir"],
-	[PPPD_RUNTIME_DIR="${runstatedir}/pppd"])
-AC_SUBST(PPPD_RUNTIME_DIR)
+	[PPPD_RUNTIME_DIR="$with_runtime_dir";
+	 AC_DEFINE_UNQUOTED(PPPD_RUNTIME_DIR, "$PPPD_RUNTIME_DIR", [The pppd runtime directory])])
 
 #
-# Specify runtime directory
+# Specify lock directory
+AC_ARG_WITH([lock-dir],
+	AS_HELP_STRING([--with-lock-dir=DIR],[Specify the lock directory for pppd]))
+AS_IF([test -n "$with_lock_dir"],
+	[PPPD_LOCK_DIR="$with_lock_dir";
+	 AC_DEFINE_UNQUOTED(PPPD_LOCK_DIR, "$PPPD_LOCK_DIR", [The pppd lock directory])])
+
+#
+# Specify logfile directory
 AC_ARG_WITH([logfile-dir],
 	AS_HELP_STRING([--with-logfile-dir=DIR],[Specify the log directory for pppd]))
 AS_IF([test -n "$with_logfile_dir"],
-	[PPPD_LOGFILE_DIR="$with_logfile_dir"],
-	[PPPD_LOGFILE_DIR="${localstatedir}/log/ppp"])
-AC_SUBST(PPPD_LOGFILE_DIR)
+	[PPPD_LOGFILE_DIR="$with_logfile_dir"];
+	 AC_DEFINE_UNQUOTED(PPPD_LOGFILE_DIR, "$PPPD_LOGFILE_DIR", [The pppd logfile directory])])
 
 #
 # System CA certificates path
@@ -410,8 +416,9 @@ Setting up SunOS kernel module(s)"
 echo "
 $PACKAGE_NAME version $PACKAGE_VERSION
     Prefix...............: $prefix
-    Runtime Dir..........: $PPPD_RUNTIME_DIR
-    Logfile Dir..........: $PPPD_LOGFILE_DIR
+    Runtime Dir..........: ${PPPD_RUNTIME_DIR:-system default}
+    Lock Dir.............: ${PPPD_LOCK_DIR:-system default}
+    Logfile Dir..........: ${PPPD_LOGFILE_DIR:-system default}
     Plugin Dir...........: $PPPD_PLUGIN_DIR
     System CA Path ......: ${SYSTEM_CA_PATH:-not set}
     With OpenSSL.........: ${with_openssl:-yes}

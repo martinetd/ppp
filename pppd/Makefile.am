@@ -3,11 +3,11 @@ dist_man8_MANS = pppd.8
 check_PROGRAMS =
 
 utest_chap_SOURCES = chap_ms.c utils.c crypto_ms.c
-utest_chap_CPPFLAGS = -DUNIT_TEST
+utest_chap_CPPFLAGS = -DUNIT_TEST -DLOCALSTATEDIR=\"${localstatedir}\"
 utest_chap_LDFLAGS =
 
 utest_peap_SOURCES = peap.c utils.c mppe.c
-utest_peap_CPPFLAGS = -DUNIT_TEST
+utest_peap_CPPFLAGS = -DUNIT_TEST -DLOCALSTATEDIR=\"${localstatedir}\"
 utest_peap_LDFLAGS =
 
 utest_crypto_SOURCES = crypto.c
@@ -83,7 +83,7 @@ pppd_SOURCES = \
     upap.c \
     utils.c
 
-pppd_CPPFLAGS = -DSYSCONFDIR=\"${sysconfdir}\" -DLOCALSTATEDIR=\"${localstatedir}\" -DPPPD_RUNTIME_DIR='"@PPPD_RUNTIME_DIR@"' -DPPPD_LOGFILE_DIR='"@PPPD_LOGFILE_DIR@"'
+pppd_CPPFLAGS = -DSYSCONFDIR=\"${sysconfdir}\" -DLOCALSTATEDIR=\"${localstatedir}\"
 pppd_LDFLAGS =
 pppd_LIBS =
 
