@@ -494,6 +494,9 @@ main(int argc, char *argv[])
      */
     sys_init();
 
+    if (access(PPP_PATH_VARRUN, F_OK))
+	    mkdir(PPP_PATH_VARRUN, 0755);
+
 #ifdef PPP_WITH_TDB
     pppdb = tdb_open(PPP_PATH_PPPDB, 0, 0, O_RDWR|O_CREAT, 0644);
     if (pppdb != NULL) {

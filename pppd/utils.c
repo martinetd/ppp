@@ -843,6 +843,9 @@ lock(char *dev)
     slprintf(lock_file, sizeof(lock_file), "%s/LCK..%s", PPP_PATH_LOCKDIR, dev);
 #endif
 
+    if (access(PPP_PATH_LOCKDIR, F_OK))
+	    mkdir(PPP_PATH_LOCKDIR, 0755);
+
     while ((fd = open(lock_file, O_EXCL | O_CREAT | O_RDWR, 0644)) < 0) {
 	if (errno != EEXIST) {
 	    error("Can't create lock file %s: %m", lock_file);
